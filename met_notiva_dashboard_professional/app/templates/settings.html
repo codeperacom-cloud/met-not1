@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Ayarlar{% endblock %}
+
+{% block content %}
+<section class="settings-head">
+  <div>
+    <p class="eyebrow">Sistem yonetimi</p>
+    <h1>Ayarlar</h1>
+    <p>SQL baglantisi, mail gonderimi ve lisans bilgilerini buradan yonetin.</p>
+  </div>
+  <div id="licenseBadge" class="license-badge">Lisans kontrol ediliyor...</div>
+</section>
+
+<section class="settings-grid">
+  <article class="settings-panel span-2">
+    <div class="panel-title">
+      <h2>SQL ve firma baglantisi</h2>
+      <span>Firmalar veritabanindan otomatik okunur</span>
+    </div>
+    <div class="form-grid">
+      <label>Sunucu / Host <input id="SQL_SERVER" autocomplete="off"></label>
+      <label>Driver <input id="SQL_DRIVER" autocomplete="off"></label>
+      <label>ERP veritabani <input id="ERP_DATABASE" autocomplete="off"></label>
+      <label>Kullanici veritabani <input id="USER_DATABASE" autocomplete="off"></label>
+      <label>Kullanici adi <input id="SQL_USER" autocomplete="off"></label>
+      <label>Sifre <input id="SQL_PASSWORD" type="password" autocomplete="new-password"></label>
+      <label>Encrypt
+        <select id="SQL_ENCRYPT">
+          <option value="no">no</option>
+          <option value="yes">yes</option>
+        </select>
+      </label>
+      <label>Trust Server Certificate
+        <select id="SQL_TRUST_SERVER_CERTIFICATE">
+          <option value="yes">yes</option>
+          <option value="no">no</option>
+        </select>
+      </label>
+    </div>
+    <div class="settings-actions">
+      <button class="button ghost" id="testSqlBtn" type="button">Baglantiyi test et</button>
+      <button class="button primary" id="saveSqlBtn" type="button">SQL ayarlarini kaydet</button>
+    </div>
+    <p class="status-line" id="sqlStatus"></p>
+  </article>
+
+  <article class="settings-panel">
+    <div class="panel-title">
+      <h2>Mail ayarlari</h2>
+      <span>Ekstre ve rapor gonderimi</span>
+    </div>
+    <div class="form-grid one">
+      <label>SMTP Host <input id="SMTP_HOST" autocomplete="off"></label>
+      <label>SMTP Port <input id="SMTP_PORT" type="number" autocomplete="off"></label>
+      <label>Gonderen mail <input id="SMTP_FROM" autocomplete="off"></label>
+      <label>SMTP kullanici <input id="SMTP_USER" autocomplete="off"></label>
+      <label>SMTP sifre <input id="SMTP_PASSWORD" type="password" autocomplete="new-password"></label>
+      <label>SSL
+        <select id="SMTP_USE_SSL">
+          <option value="false">false</option>
+          <option value="true">true</option>
+        </select>
+      </label>
+    </div>
+    <div class="settings-actions">
+      <button class="button primary" id="saveMailBtn" type="button">Mail ayarlarini kaydet</button>
+    </div>
+    <p class="status-line" id="mailSettingsStatus"></p>
+  </article>
+
+  <article class="settings-panel">
+    <div class="panel-title">
+      <h2>Lisanslama</h2>
+      <span>Aylik / yillik</span>
+    </div>
+    <div class="license-card">
+      <span>Durum</span>
+      <strong id="licenseState">Kontrol ediliyor...</strong>
+      <small id="licenseDates"></small>
+    </div>
+    <div class="form-grid one">
+      <label>Lisans anahtari <input id="licenseKey" autocomplete="off"></label>
+      <label>Periyot
+        <select id="licensePeriod">
+          <option value="monthly">Aylik</option>
+          <option value="yearly">Yillik</option>
+        </select>
+      </label>
+    </div>
+    <div class="settings-actions">
+      <button class="button primary" id="saveLicenseBtn" type="button">Lisans kaydet</button>
+    </div>
+    <p class="status-line" id="licenseStatus"></p>
+  </article>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

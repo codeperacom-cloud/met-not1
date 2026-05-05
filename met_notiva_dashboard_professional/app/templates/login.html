@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Notiva - Giris{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-visual">
+      <div class="login-visual-brand">
+        <span class="brand-icon">N</span>
+        <span>NOTIVA</span>
+      </div>
+      <div class="login-visual-content">
+        <h1>One click to go<br>all digital.</h1>
+        <p>ERP raporlarini, cari hareketleri ve satis performansini tek bir profesyonel panelde takip edin. Veriye dayali kararlar ile isinizi buyutun.</p>
+        <div class="login-visual-image">
+          <div class="dashboard-mockup">
+            <div class="mockup-header">
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+            </div>
+            <div class="mockup-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-form-side">
+      <div class="form-header">
+        <h2>Sign in</h2>
+        <p>Hesabiniza giris yapin</p>
+      </div>
+      <form method="post">
+        <div class="form-group">
+          <label>Kullanici adi</label>
+          <input name="username" required autocomplete="username" placeholder="Kullanici adinizi girin">
+        </div>
+        <div class="form-group">
+          <label>Sifre</label>
+          <input type="password" name="password" required autocomplete="current-password" placeholder="Sifrenizi girin">
+        </div>
+        <button class="submit-btn" type="submit">Giris yap</button>
+      </form>
+      <div class="form-footer">
+        <p>Guvenli oturum | SSL korumali</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

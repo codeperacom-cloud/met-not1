@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block title %}Satis elemani performans{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="sales-page-head">
+  <div>
+    <p class="eyebrow">Performans</p>
+    <h1>Satis elemani performans</h1>
+  </div>
+</section>
+
+<!-- Personel Listesi Tablosu -->
+<section class="personnel-table-section">
+  <div class="personnel-table-header">
+    <h3>Satis Ekibi</h3>
+    <div class="personnel-search">
+      <input type="text" id="personnelSearch" placeholder="Personel ara...">
+    </div>
+  </div>
+  <div class="personnel-table-wrapper">
+    <table class="personnel-table" id="personnelTable">
+      <thead>
+        <tr>
+          <th style="width: 40%;">Personel</th>
+          <th style="width: 20%;">Toplam Adet</th>
+          <th style="width: 25%;">Toplam Tutar</th>
+          <th style="width: 15%;">Islem</th>
+        </tr>
+      </thead>
+      <tbody id="personnelTableBody">
+        <!-- JS ile doldurulacak -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Grafik -->
+<section class="chart-shell">
+  <canvas id="monthlyChart" height="100"></canvas>
+</section>
+
+<!-- Filtreler ve Detay Tablo -->
+<section class="filters">
+  <label>
+    Baslangic
+    <input type="date" id="startDate" value="{{ default_start }}">
+  </label>
+  <label>
+    Bitis
+    <input type="date" id="endDate" value="{{ default_end }}">
+  </label>
+  <label>
+    Satis elemani
+    <select id="filterSalesman"><option value="">Tumu</option></select>
+  </label>
+  <label>
+    Cari
+    <select id="filterCari"><option value="">Tumu</option></select>
+  </label>
+  <div style="display:flex;align-items:end;">
+    <button class="button primary" id="applyFiltersBtn" type="button">Filtrele</button>
+  </div>
+</section>
+
+<section class="table-shell">
+  <table id="detailSalesTable" class="display" style="width:100%"></table>
+</section>
+
+<!-- Personel Modal - Tam Ekran -->
+<dialog id="personnelModal" class="dialog fullscreen">
+  <div class="modal-container">
+    <!-- Sol Panel - Personel Bilgisi -->
+    <div class="modal-sidebar">
+      <div class="modal-profile-large">
+        <div class="modal-avatar-large" id="modalAvatar">N</div>
+        <h2 id="modalName">Personel Adi</h2>
+        <span class="modal-role">Satis Temsilcisi</span>
+      </div>
+      
+      <!-- Aylik Durum -->
+      <div class="modal-monthly-status">
+        <h4><span id="currentMonthLabel">Mayis</span> Ayi Guncel Durum</h4>
+        <div class="status-item">
+          <div class="status-icon blue"><i class="fas fa-money-bill-wave"></i></div>
+          <div class="status-info">
+            <span class="status-label">Toplam Satis Tutari</span>
+            <strong class="status-value" id="modalMonthAmount">0</strong>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon purple"><i class="fas fa-shopping-cart"></i></div>
+          <div class="status-info">
+            <span class="status-label">Toplam Satilan Urun</span>
+            <strong class="status-value" id="modalMonthQty">0</strong>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon orange"><i class="fas fa-clipboard-list"></i></div>
+          <div class="status-info">
+            <span class="status-label">Toplam Siparis</span>
+            <strong class="status-value" id="modalMonthOrders">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Excel Butonu - Sol Alt -->
+      <div class="modal-sidebar-footer">
+        <button class="button primary modal-action-btn" id="exportExcelBtn" type="button">
+          <i class="fas fa-file-excel"></i> Excel Indir
+        </button>
+      </div>
+    </div>
+
+    <!-- Sag Panel - Detaylar -->
+    <div class="modal-content-area">
+      <div class="modal-content-header">
+        <h3>Satis Elemani Detayli Analiz</h3>
+        <button class="modal-close" id="closeModalBtn" type="button">✕</button>
+      </div>
+
+      <!-- Yil Geneli Toplamlar -->
+      <div class="modal-year-summary">
+        <h4>Yil Geneli Toplamlar</h4>
+        <div class="year-stats-grid">
+          <div class="year-stat-card">
+            <span class="year-stat-label">Toplam Satis Tutari</span>
+            <strong class="year-stat-value" id="modalYearAmount">0</strong>
+          </div>
+          <div class="year-stat-card">
+            <span class="year-stat-label">Toplam Satilan Urun</span>
+            <strong class="year-stat-value" id="modalYearQty">0</strong>
+          </div>
+          <div class="year-stat-card">
+            <span class="year-stat-label">Ortalama Siparis Tutari</span>
+            <strong class="year-stat-value" id="modalAvgOrder">0</strong>
+          </div>
+          <div class="year-stat-card">
+            <span class="year-stat-label">Toplam Siparis Miktari</span>
+            <strong class="year-stat-value" id="modalYearOrders">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ay Secici -->
+      <div class="month-selector">
+        <label>
+          Donem
+          <select id="monthSelector">
+            <option value="">Guncel Ay</option>
+            <option value="01">Ocak</option>
+            <option value="02">Subat</option>
+            <option value="03">Mart</option>
+            <option value="04">Nisan</option>
+            <option value="05">Mayis</option>
+            <option value="06">Haziran</option>
+            <option value="07">Temmuz</option>
+            <option value="08">Agustos</option>
+            <option value="09">Eylul</option>
+            <option value="10">Ekim</option>
+            <option value="11">Kasim</option>
+            <option value="12">Aralik</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Tablar -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="cari">Cariye Gore</button>
+        <button class="modal-tab" data-tab="urun">Urune Gore</button>
+        <button class="modal-tab" data-tab="hareket">Tum Hareketler</button>
+      </div>
+
+      <!-- Tab Icerikleri - Scrollable -->
+      <div class="tab-content active" id="tabCari">
+        <div class="modal-table-title">Cariye Gore Toplamlar <span id="cariMonthLabel">Mayis Ayi</span></div>
+        <div class="modal-table-scroll">
+          <table id="modalCariTable" class="display compact" style="width:100%"></table>
+        </div>
+      </div>
+      <div class="tab-content" id="tabUrun">
+        <div class="modal-table-title">Urune Gore Toplamlar <span id="urunMonthLabel">Mayis Ayi</span></div>
+        <div class="modal-table-scroll">
+          <table id="modalUrunTable" class="display compact" style="width:100%"></table>
+        </div>
+      </div>
+      <div class="tab-content" id="tabHareket">
+        <div class="modal-table-title">Tum Satis Hareketleri</div>
+        <div class="modal-table-scroll">
+          <table id="modalHareketTable" class="display compact" style="width:100%"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="{{ url_for('static', filename='js/sales.js') }}"></script>
+{% endblock %}

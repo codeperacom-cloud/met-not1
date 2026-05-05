@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Notiva Dashboard{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-head">
+  <div>
+    <p class="eyebrow">Dashboard</p>
+    <h1>Finans ve operasyon ozeti</h1>
+  </div>
+  <div class="dashboard-actions">
+    <div class="active-firm-pill">
+      <span>Aktif firma</span>
+      <strong id="activeFirmDisplay">Yukleniyor...</strong>
+    </div>
+    <button class="button secondary" id="firmSettingsBtn" type="button">Firma / donem</button>
+  </div>
+</section>
+
+<section class="kpi-grid">
+  <article class="kpi">
+    <span>Toplam acik alacak</span>
+    <strong id="kpiReceivable">0</strong>
+    <small id="kpiCustomerCount">0 cari</small>
+  </article>
+  <article class="kpi danger">
+    <span>Toplam borc</span>
+    <strong id="kpiDebt">0</strong>
+    <small>Guncel bakiye</small>
+  </article>
+  <article class="kpi">
+    <span>Bugun vadeli</span>
+    <strong id="kpiDueToday">0</strong>
+    <small>Takip bekleyen</small>
+  </article>
+  <article class="kpi">
+    <span>Yuksek risk</span>
+    <strong id="kpiRisk">0 cari</strong>
+    <small>Limit uzeri acik bakiye</small>
+  </article>
+</section>
+
+<section class="dashboard-grid top">
+  <article class="dashboard-panel manager-panel">
+    <div class="panel-title">
+      <h2>Yonetici ozeti</h2>
+      <span id="summaryDate"></span>
+    </div>
+    <div class="priority-card">
+      <div class="priority-icon">AI</div>
+      <div>
+        <strong>Tahsilat onceligi</strong>
+        <p>Acik bakiyesi olan cariler ve yuksek riskli kayitlar onceliklendirildi.</p>
+      </div>
+    </div>
+    <div class="mini-stat-grid">
+      <div><span>AI kapsam</span><strong id="aiCoverage">100%</strong></div>
+      <div><span>Acik cari</span><strong id="openAccounts">0</strong></div>
+      <div><span>Kritik cari</span><strong id="criticalAccounts">0</strong></div>
+    </div>
+  </article>
+
+  <article class="dashboard-panel list-panel">
+    <div class="panel-title">
+      <h2>AI oncelik listesi</h2>
+      <a href="{{ url_for('dashboard.collections') }}">Tahsilata git</a>
+    </div>
+    <div id="priorityList" class="priority-list"></div>
+  </article>
+
+  <article class="dashboard-panel risk-panel">
+    <div class="panel-title">
+      <h2>AI kapsama durumu</h2>
+    </div>
+    <div class="risk-bars">
+      <div><span>Analiz edilen cari</span><strong id="riskAnalyzed">0</strong></div>
+      <div><span>Yuksek AI risk</span><strong id="riskHigh">0</strong></div>
+      <div><span>En yuksek skor</span><strong id="riskScore">0</strong></div>
+    </div>
+    <div class="progress-line"><span id="riskProgress"></span></div>
+  </article>
+</section>
+
+<section class="dashboard-grid charts">
+  <article class="dashboard-panel wide-chart">
+    <div class="panel-title">
+      <h2>Bakiye dagilimi</h2>
+      <span>Tutar bazli risk bantlari</span>
+    </div>
+    <canvas id="agingChart" height="120"></canvas>
+  </article>
+  <article class="dashboard-panel">
+    <div class="panel-title">
+      <h2>Risk dagilimi</h2>
+    </div>
+    <canvas id="riskChart" height="190"></canvas>
+  </article>
+</section>
+
+<section class="dashboard-grid bottom">
+  <article class="dashboard-panel table-panel">
+    <div class="panel-title">
+      <h2>En buyuk alacaklar</h2>
+      <a href="{{ url_for('cari.report') }}">Tumunu ac</a>
+    </div>
+    <div id="topReceivables" class="receivable-list"></div>
+  </article>
+  <article class="dashboard-panel">
+    <div class="panel-title">
+      <h2>Son siparisler</h2>
+      <a href="{{ url_for('orders.report') }}">Analize git</a>
+    </div>
+    <div id="recentOrders" class="activity-list"></div>
+  </article>
+  <article class="dashboard-panel">
+    <div class="panel-title">
+      <h2>Son aksiyonlar</h2>
+    </div>
+    <div id="actionList" class="activity-list"></div>
+  </article>
+</section>
+
+<dialog id="settingsDialog" class="dialog">
+  <div class="dialog-body">
+    <h2>Firma ve donem</h2>
+    <label>
+      Firma
+      <select id="firmSelect"></select>
+    </label>
+    <label>
+      Donem
+      <select id="periodSelect"></select>
+    </label>
+    <div class="dialog-actions">
+      <button class="button ghost" id="cancelSettingsBtn" type="button">Iptal</button>
+      <button class="button primary" id="saveSettingsBtn" type="button">Kaydet</button>
+    </div>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

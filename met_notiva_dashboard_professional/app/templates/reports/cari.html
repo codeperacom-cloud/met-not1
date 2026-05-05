@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Cari Bakiye{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="report-head">
+  <div>
+    <p class="eyebrow">Rapor</p>
+    <h1>Cari bakiye</h1>
+  </div>
+  <a class="button ghost" href="{{ url_for('dashboard.index') }}">Dashboard</a>
+</section>
+
+<section class="kpi-grid">
+  <div class="kpi"><span>Cariler</span><strong id="totalCariler">0</strong></div>
+  <div class="kpi"><span>Borclu</span><strong id="borcluCariler">0</strong></div>
+  <div class="kpi"><span>Alacakli</span><strong id="alacakliCariler">0</strong></div>
+  <div class="kpi"><span>Net bakiye</span><strong id="netBakiye">0</strong></div>
+</section>
+
+<section class="table-shell">
+  <table id="cariTable" class="display compact" style="width:100%"></table>
+</section>
+
+<dialog id="ekstreDialog" class="dialog wide">
+  <div class="dialog-header">
+    <div class="dialog-header-content">
+      <div class="dialog-header-info">
+        <h2 id="ekstreTitle">Ekstre</h2>
+      </div>
+    </div>
+    <button class="dialog-close" id="closeEkstreBtn" type="button">✕</button>
+  </div>
+  <div class="dialog-body">
+    <div class="filters">
+      <label>Baslangic <input type="date" id="startDate"></label>
+      <label>Bitis <input type="date" id="endDate"></label>
+      <button class="button secondary" id="reloadEkstreBtn" type="button">Yenile</button>
+      <button class="button primary" id="sendEkstreMailBtn" type="button">Mail gonder</button>
+    </div>
+    <p id="mailStatus" class="status-line"></p>
+    <table id="ekstreTable" class="display compact" style="width:100%"></table>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script src="{{ url_for('static', filename='js/cari.js') }}"></script>
+{% endblock %}

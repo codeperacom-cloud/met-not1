@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Notiva Dashboard{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% if session.get("user_id") %}
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="sidebar-brand" href="{{ url_for('dashboard.index') }}">
+        <span class="brand-icon">N</span>
+        <span class="brand-text">Notiva</span>
+      </a>
+      <nav class="side-nav">
+        <a href="{{ url_for('dashboard.index') }}" data-tooltip="Dashboard" class="{% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="{{ url_for('cari.report') }}" data-tooltip="Cari bakiye" class="{% if request.endpoint == 'cari.report' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-wallet"></i></span>
+          <span class="nav-text">Cari bakiye</span>
+        </a>
+        <a href="{{ url_for('dashboard.collections') }}" data-tooltip="Tahsilat" class="{% if request.endpoint == 'dashboard.collections' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-hand-holding-dollar"></i></span>
+          <span class="nav-text">Tahsilat</span>
+        </a>
+        <a href="{{ url_for('sales.report') }}" data-tooltip="Performans" class="{% if request.endpoint == 'sales.report' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-users"></i></span>
+          <span class="nav-text">Satis performans</span>
+        </a>
+        <a href="{{ url_for('orders.report') }}" data-tooltip="Siparis" class="{% if request.endpoint == 'orders.report' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-box"></i></span>
+          <span class="nav-text">Siparis</span>
+        </a>
+        <a href="{{ url_for('dashboard.users') }}" data-tooltip="Kullanicilar" class="{% if request.endpoint == 'dashboard.users' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+          <span class="nav-text">Kullanicilar</span>
+        </a>
+        <a href="{{ url_for('dashboard.settings') }}" data-tooltip="Ayarlar" class="{% if request.endpoint == 'dashboard.settings' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-gear"></i></span>
+          <span class="nav-text">Ayarlar</span>
+        </a>
+        <a href="{{ url_for('dashboard.backup') }}" data-tooltip="Yedekleme" class="{% if request.endpoint == 'dashboard.backup' %}active{% endif %}">
+          <span class="nav-icon"><i class="fas fa-cloud-arrow-up"></i></span>
+          <span class="nav-text">Yedekleme</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Tema degistir" title="Tema degistir">
+          <i class="fas fa-moon"></i>
+        </button>
+        <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+          <i class="fas fa-right-from-bracket"></i>
+          <span>Cikis</span>
+        </a>
+      </div>
+    </aside>
+    <div class="app-main">
+      <header class="topbar">
+        <div>
+          <p class="topbar-eyebrow">Oturum</p>
+          <strong>{{ session.get("full_name") or session.get("username") }}</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="user-pill">{{ session.get("full_name") or session.get("username") }}</span>
+          <button class="icon-button desktop-theme" id="themeToggle" type="button" aria-label="Tema degistir" title="Tema degistir">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+  {% endif %}
+
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if session.get("user_id") %}
+    </div>
+  </div>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script>
+    (function() {
+      const sidebar = document.getElementById('sidebar');
+      const saved = localStorage.getItem('notiva-sidebar-expanded');
+      if (saved === 'true' && sidebar) sidebar.classList.add('expanded');
+    })();
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
